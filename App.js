@@ -7,7 +7,8 @@
  */
 
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View} from 'react-native';
+import {Platform, StyleSheet, Text, View, StatusBar} from 'react-native';
+import AppNavigator from './navigation/AppNavigator';
 
 import { Api, JsonRpc, RpcError, JsSignatureProvider } from 'eosjs';
 
@@ -93,10 +94,8 @@ export default class App extends Component<Props> {
   render() {
     return (
       <View style={styles.container}>
-        <Text style={styles.welcome}>Welcome to React Native!</Text>
-        <Text style={styles.instructions}>{ JSON.stringify(this.state.info) || 'Null'}</Text>
-        <Text style={styles.instructions}>{ JSON.stringify(this.state.info1) || 'Null'}</Text>
-        <Text style={styles.instructions}>{instructions}</Text>
+        { Platform.OS === 'ios' && <StatusBar barStyle="default" /> }
+          <AppNavigator />
       </View>
     );
   }
@@ -105,8 +104,8 @@ export default class App extends Component<Props> {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    // justifyContent: 'center',
+    // alignItems: 'center',
     backgroundColor: '#F5FCFF',
   },
   welcome: {

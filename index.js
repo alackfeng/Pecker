@@ -5,8 +5,20 @@ import './shim.js'
 import crypto from 'crypto'
 // ...the rest of your code
 
-import {AppRegistry} from 'react-native';
+import React from 'react';
+import {AppRegistry, YellowBox} from 'react-native';
+import {Provider} from 'react-redux';
+import store from './store/store';
+
 import App from './App';
 import {name as appName} from './app.json';
 
-AppRegistry.registerComponent(appName, () => App);
+YellowBox.ignoreWarnings(['Remote debugger', 'RNOS']);
+
+const _App = ()=>(
+  <Provider store={store}>
+    <App/>
+  </Provider>
+);
+
+AppRegistry.registerComponent(appName, () => _App);
