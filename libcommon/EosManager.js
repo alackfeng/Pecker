@@ -13,6 +13,7 @@ class EosManager {
     this.rpc = new JsonRpc(rpcUrl || defaultRpcUrl, { fetch });
     this.api = new Api({  rpc: this.rpc,  signatureProvider: this.signatureProvider, /*textDecoder: new TextDecoder(), textEncoder: new TextEncoder()*/ });
   
+    this.RpcError = RpcError;
   }
 
 };

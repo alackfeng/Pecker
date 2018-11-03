@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: Colors.tintColor,
     flex: 1,
-    justifyContent: 'center'
+    justifyContent: 'space-between'
   },
   titleText: {
     color: Colors.tabIconDefault,

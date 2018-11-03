@@ -4,6 +4,7 @@ import { ScrollView, View, Text, SectionList, FlatList, TouchableHighlight, Styl
 import Colors from '../constants/Colors';
 import Layout from '../constants/Layout';
 import EosManager from '../libcommon/EosManager';
+import SearchBar from '../components/SearchBar';
 
 
 export default class ExplorerBlock extends React.Component {
@@ -20,11 +21,11 @@ export default class ExplorerBlock extends React.Component {
 
   componentWillMount() {
 
-    this.getinfo().then( result => {
-      console.log('===== ExplorerBlock:: RESULT: ' , result);
-    }).catch( err => {
-      console.error('===== ExplorerBlock:: ERROR: ' , err);
-    });
+    // this.getinfo().then( result => {
+    //   console.log('===== ExplorerBlock:: RESULT: ' , result);
+    // }).catch( err => {
+    //   console.error('===== ExplorerBlock:: ERROR: ' , err);
+    // });
 
     // this.get_account('eosio');
 
@@ -40,7 +41,7 @@ export default class ExplorerBlock extends React.Component {
 
     } catch (e) {
       console.log('\nCaught exception: ' + e);
-      if (e instanceof RpcError)
+      if (e instanceof EosManager.RpcError)
         console.log(JSON.stringify(e.json, null, 2));
       this.setState({error: e.json});
     }
@@ -56,11 +57,18 @@ export default class ExplorerBlock extends React.Component {
 
     } catch (e) {
       console.log('\nCaught exception: ' + e);
-      if (e instanceof RpcError)
+      if (e instanceof EosManager.RpcError)
         console.log(JSON.stringify(e.json, null, 2));
       this.setState({error: e.json});
     }
     return 'ok';
+  }
+
+  clearSearch = () => this.setState({info: null, error: null})
+
+  handleSearch = ({ search }) => {
+
+    this.get_account(search);
   }
 
 
@@ -69,8 +77,11 @@ export default class ExplorerBlock extends React.Component {
 
     return (
       <ScrollView style={styles.container}>
-        <Text>hello info:  {JSON.stringify(this.state.info)}</Text>
-        <Text>hello error:  {JSON.stringify(this.state.error)}</Text>
+        <SearchBar handleSearch = {this.handleSearch} clearSearch = { this.clearSearch } />
+        <View style={styles.searchresultContainer}>
+          {this.state.info && <Text>Search RESULT:  {JSON.stringify(this.state.info)}</Text>}
+          {this.state.error && <Text style={styles.error}>Search ERROR:  {JSON.stringify(this.state.error)}</Text>}
+        </View>
       </ScrollView>
     );
   }
@@ -80,8 +91,16 @@ export default class ExplorerBlock extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'transparent'
+    backgroundColor: 'transparent',
   },
+  searchresultContainer: {
+    marginTop: 10,
+    marginLeft: 10,
+    marginRight: 10,
+  },
+  error: {
+    color: 'red'
+  }
 
 });
 
