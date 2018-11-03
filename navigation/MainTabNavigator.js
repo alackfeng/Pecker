@@ -8,6 +8,8 @@ import HomeScreen from '../screens/HomeScreen';
 import InfosScreen from '../screens/InfosScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import PeckScreen from '../screens/PeckScreen';
+import WebViewScreen from '../screens/WebViewScreen';
+import ExplorerScreen from '../screens/ExplorerScreen';
 
 const HomeStack = createStackNavigator({
   Home: HomeScreen,
@@ -29,6 +31,8 @@ HomeStack.navigationOptions = {
 
 const PeckStack = createStackNavigator({
   Pecker: PeckScreen,
+  WebView: WebViewScreen,
+  Explorer: ExplorerScreen,
 });
 
 PeckStack.navigationOptions = {

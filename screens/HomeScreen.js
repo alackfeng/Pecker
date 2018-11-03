@@ -13,13 +13,19 @@ class HomeScreen extends React.Component {
     header: null,
   };
 
+  toWebViewPage = (url) => {
+    const { navigation } = this.props;
+    if(navigation && navigation.navigate) 
+      navigation.navigate('WebView', {openUrl1: 'https://eosflare.io/account/eosflareiobp'});
+  }
+
   render() {
 
     const { increment, handleIncrement } = this.props;
 
     return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: 'yellow' }}>
-        <Button title="INCRM" onPress={handleIncrement.bind(null, increment)} />
+        <Button title="To WebView" onPress={ () => this.toWebViewPage() } />
         <Text>Home Screen { increment }</Text>
       </View>
     );
