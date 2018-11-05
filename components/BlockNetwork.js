@@ -46,12 +46,26 @@ class BlockNetwork extends React.Component {
     });
   }
 
+  parseNetworkInfo = ( info ) => {
+  
+    if(info && typeof info === 'object') {
+      const itemObj = Object.keys(info).map(key => {
+        const filter = this.state.filters.filter(f => (key === f));
+        return filter.length 
+          ? <ItemkeyValue key={key} item={key} value={info[key]} /> 
+          : null
+      });
+      return itemObj;
+    }
+    return <ItemkeyValue key={0} item={'info'} value={'none'} />
+  }
+
   render() {
 
     return (
       <View style={styles.container} >
-        <Text>Block NetWork </Text>
-        <BlockInfo info={this.state.network} />
+        <View style={styles.titleContainer} ><Text style={styles.titleText} >Block NetWork </Text></View>
+        <View>{ this.parseNetworkInfo(this.state.network) }</View>
       </View>
     );
   }
@@ -64,34 +78,48 @@ const styles = StyleSheet.create({
   container: {
     marginTop: 10,
   },
+  titleContainer: {
+    marginLeft: 5,
+  },
+  titleText: {
+    color: 'black',
+    textAlign: 'left',
+    fontSize: 14,
+    alignItems: 'center',
+    fontWeight: 'bold',
+    lineHeight: 16,
+  },
   itemContainer: {
     justifyContent: 'space-between',
-    flex: 1,
-    marginTop: 5,
-    borderLeftWidth: 3,
-    borderLeftColor: Colors.leftBorder, //'gray'
+    backgroundColor: 'transparent',
+    flexDirection: 'row',
+    marginTop: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: 'gray',
+    height: 30,
   },
   itemTextContainerLeft: {
-    flex: 1,
-    // borderBottomWidth: .5,
-    // borderBottomColor: Colors.underline,
     marginLeft: 5,
-    // width: Layout.window.width * 0.8,
+    width: Layout.window.width * 0.3,
+
   },
   itemTextContainerRight: {
-    flex: 1,
-    marginTop: 5,
     marginLeft: 5,
   },
   itemTextLeft: {
-    color: 'red',
+    color: 'gray',
     textAlign: 'left',
-    fontSize: 12,
+    fontSize: 14,
+    alignItems: 'center',
+    fontWeight: 'bold',
+    lineHeight: 14,
   },
   itemTextRight: {
     color: 'yellow',
     textAlign: 'right',
-    fontSize: 12,
+    alignItems: 'center',
+    fontSize: 14,
+    lineHeight: 14,
   },
 
 });
