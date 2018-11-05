@@ -16,6 +16,24 @@ class EosManager {
     this.RpcError = RpcError;
   }
 
+  async getinfo() {
+
+    try {
+
+      const result = await this.rpc.get_info();
+      console.log('\n===== EOS get_info : ' + JSON.stringify(result));
+      
+      return {info: result};
+
+    } catch (e) {
+      console.log('\nCaught exception: ' + e);
+      if (e instanceof this.RpcError)
+        console.log(JSON.stringify(e.json, null, 2));
+      return {error: e.json};
+    }
+    return 'ok';
+  }
+
 };
 
 export default new EosManager({});

@@ -5,6 +5,8 @@ import Colors from '../constants/Colors';
 import Layout from '../constants/Layout';
 import EosManager from '../libcommon/EosManager';
 import SearchBar from '../components/SearchBar';
+import BlockInfo from '../components/BlockInfo';
+import BlockShortcut from '../components/BlockShortcut';
 
 
 export default class ExplorerBlock extends React.Component {
@@ -21,11 +23,11 @@ export default class ExplorerBlock extends React.Component {
 
   componentWillMount() {
 
-    // this.getinfo().then( result => {
-    //   console.log('===== ExplorerBlock:: RESULT: ' , result);
-    // }).catch( err => {
-    //   console.error('===== ExplorerBlock:: ERROR: ' , err);
-    // });
+    this.getinfo().then( result => {
+      console.log('===== ExplorerBlock:: RESULT: ' , result);
+    }).catch( err => {
+      console.error('===== ExplorerBlock:: ERROR: ' , err);
+    });
 
     // this.get_account('eosio');
 
@@ -37,6 +39,7 @@ export default class ExplorerBlock extends React.Component {
     try {
 
       const result = await EosManager.rpc.get_info();
+      console.log('\n===== EOS get_info : ' + JSON.stringify(result));
       this.setState({info: result});
 
     } catch (e) {
@@ -71,6 +74,15 @@ export default class ExplorerBlock extends React.Component {
     this.get_account(search);
   }
 
+  onTouchButton = ({url, params}) => {
+    const { navigation } = this.props;
+
+    console.log('===== ExplorerBlock:: onTouchButton - ', url, params, navigation);
+
+    if(navigation)
+      navigation.navigate( url , {name: params.name});
+  }
+
 
   render() {
 
@@ -78,8 +90,9 @@ export default class ExplorerBlock extends React.Component {
     return (
       <ScrollView style={styles.container}>
         <SearchBar handleSearch = {this.handleSearch} clearSearch = { this.clearSearch } />
+        <BlockShortcut onTouchButton={this.onTouchButton} />
         <View style={styles.searchresultContainer}>
-          {this.state.info && <Text>Search RESULT:  {JSON.stringify(this.state.info)}</Text>}
+          {this.state.info && <BlockInfo info={this.state.info} />}
           {this.state.error && <Text style={styles.error}>Search ERROR:  {JSON.stringify(this.state.error)}</Text>}
         </View>
       </ScrollView>

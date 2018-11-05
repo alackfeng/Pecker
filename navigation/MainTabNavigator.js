@@ -10,6 +10,7 @@ import SettingsScreen from '../screens/SettingsScreen';
 import PeckScreen from '../screens/PeckScreen';
 import WebViewScreen from '../screens/WebViewScreen';
 import ExplorerScreen from '../screens/ExplorerScreen';
+import NetworkScreen from '../screens/NetworkScreen';
 
 const HomeStack = createStackNavigator({
   Home: HomeScreen,
@@ -33,6 +34,7 @@ const PeckStack = createStackNavigator({
   Pecker: PeckScreen,
   WebView: WebViewScreen,
   Explorer: ExplorerScreen,
+  AllNetwork: NetworkScreen,
 });
 
 PeckStack.navigationOptions = {
