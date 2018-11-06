@@ -26,13 +26,47 @@ class EosManager {
       return {info: result};
 
     } catch (e) {
-      console.log('\nCaught exception: ' + e);
+      console.log('\nCaught exception get_info: ' + e);
       if (e instanceof this.RpcError)
         console.log(JSON.stringify(e.json, null, 2));
       return {error: e.json};
     }
     return 'ok';
   }
+
+  async getAccount(name) {
+
+    try {
+
+      const result = await this.rpc.get_account(name);
+      return {info: result};
+
+    } catch (e) {
+      console.log('\nCaught exception get_account: ' + e);
+      if (e instanceof this.RpcError)
+        console.log(JSON.stringify(e.json, null, 2));
+      return {error: e.json};
+    }
+
+  }
+
+  async getBlock(height) {
+
+    try {
+
+      console.log('===== EosManager::getBlock - ', this.rpc);
+      const result = await this.rpc.get_block(height);
+      return {info: result};
+
+    } catch (e) {
+      console.log('\nCaught exception get_block: ' + e);
+      if (e instanceof this.RpcError)
+        console.log(JSON.stringify(e.json, null, 2));
+      return {error: e.json};
+    }
+
+  }
+
 
 };
 

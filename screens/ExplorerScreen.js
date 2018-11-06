@@ -6,14 +6,22 @@ import ExplorerHeader from '../components/ExplorerHeader';
 import ExplorerBlock from '../components/ExplorerBlock';
 
 export default class ExplorerScreen extends Component {
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      hiddenHead: false,
+    }
+  }
   render() {
 
     const { navigation } = this.props;
 
     return (
       <View style={ styles.container }>
-        <ExplorerHeader />
-        <ExplorerBlock navigation = {navigation} />
+        {!this.state.hiddenHead && <ExplorerHeader />}
+        <ExplorerBlock navigation = {navigation} hiddenHead={ (hiddenHead) => { this.setState({hiddenHead})} } />
       </View>
     );
   }
