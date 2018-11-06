@@ -20,6 +20,26 @@ class IconEx extends React.Component {
   }
 }
 
+
+export const itemObjsfilter = (items, filters) => {
+
+  if(!items || items === {})
+   return null;
+
+  return Object.keys(items).map(k => {
+    if(filters) {
+      const filter = filters.filter(f => (k === f));
+      if(filter.length) {
+        filters.splice( filters.indexOf(k), 1);
+        return <ItemKeyValue key={k} item={k} value={items[k]} />
+      }
+      return null;
+    }
+    // ALL
+    return <ItemKeyValue key={k} item={k} value={items[k]} />;
+  });
+};
+
 const itemKeyTypeDate = ['created', 'last_code_update'];
 
 const convertItemKeyValue = (k, v) => {

@@ -8,7 +8,7 @@ import { ItemTitle, ItemKeyValue, itemObjsfilter } from './ItemList';
 
 
 
-export default class AccountAsset extends React.Component {
+export default class BlockInfo extends React.Component {
 
   render() {
 

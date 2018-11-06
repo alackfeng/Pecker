@@ -15,10 +15,10 @@ I18n.translations = {
     creator: 'creator',
     Asset: 'Asset',
     core_liquid_balance: 'core_liquid_balance', 
-    ram_quota: 'ram_quota', 
-    ram_usage: 'ram_usage', 
     net_weight: 'net_weight', 
-    cpu_weight: 'cpu_weight'
+    cpu_weight: 'cpu_weight',
+    staked: 'staked', 
+    unstaking: 'unstaking',
   },
 
   zh: {
@@ -34,10 +34,10 @@ I18n.translations = {
     creator: '创建者',
     Asset: '资产',
     core_liquid_balance: '可用余额',
-    ram_quota: 'ram_quota', 
-    ram_usage: 'ram_usage', 
-    net_weight: 'net_weight', 
-    cpu_weight: 'cpu_weight'
+    net_weight: 'Net 抵押', 
+    cpu_weight: 'CPU 抵押',
+    staked: '抵押给他人', 
+    unstaking: '正在赎回',
   },
 };
 

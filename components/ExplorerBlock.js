@@ -8,6 +8,8 @@ import SearchBar from '../components/SearchBar';
 import BlockInfo from '../components/BlockInfo';
 import BlockShortcut from '../components/BlockShortcut';
 import BlockAccount from '../components/BlockAccount';
+import BlockBlock from '../components/BlockBlock';
+import BlockTransaction from '../components/BlockTransaction';
 
 
 const searchRules = {
@@ -65,13 +67,16 @@ export default class ExplorerBlock extends React.Component {
 
     const execApiFunction = 
       (type === 'height' ? EosManager.getBlock(search) : 
-      (type === 'transaction' ? EosManager.getinfo(search) : 
+      (type === 'transaction' ? EosManager.getTransaction(search) : //'e5a9a3f6f8865960b71bf3a117cc354124a283593ec9565f2de0911cdbef4921') : 
       (type === 'account' ? EosManager.getAccount(search) : 
         EosManager.getAccount(search))));
 
     execApiFunction.then( result => {
       console.log('===== ExplorerBlock:: RESULT: ' , JSON.stringify(result));
-      this.setState({searchResult: result.info, searchContent: search, searchType: type});
+      if(result.info)
+        this.setState({searchResult: result.info, searchContent: search, searchType: type});
+      else
+        this.setState({searchResult: null, searchContent: search, searchType: type, error: result.error});
     }).catch( err => {
       console.error('===== BlockNetwork:: ERROR: ' , err);
       this.setState({searchResult: null, searchContent: search, searchType: type});
@@ -119,8 +124,13 @@ export default class ExplorerBlock extends React.Component {
         <SearchBar handleSearch = {this.handleSearch} clearSearch = { this.clearSearch } />
         {!this.state.hidden && <BlockShortcut onTouchButton={this.onTouchButton} /> }
         <View style={styles.searchresultContainer}>
-          {this.state.info && <BlockInfo info={this.state.info} />}
-          {this.state.searchType && <BlockAccount accountInfo={this.state.searchResult} />}
+          {!this.state.error && this.state.info && <BlockInfo info={this.state.info} />}
+          {!this.state.error && this.state.searchType === 'account' && this.state.searchResult 
+            && <BlockAccount accountInfo={this.state.searchResult} />}
+          {!this.state.error && this.state.searchType === 'height' && this.state.searchResult 
+            && <BlockBlock blockInfo={this.state.searchResult} />}
+          {!this.state.error && this.state.searchType === 'transaction' && this.state.searchResult 
+            && <BlockTransaction transactionInfo={this.state.searchResult} />}
           {this.state.error && <Text style={styles.error}>Search ERROR:  {JSON.stringify(this.state.error)}</Text>}
         </View>
       </ScrollView>

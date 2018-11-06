@@ -67,6 +67,23 @@ class EosManager {
 
   }
 
+  async getTransaction(id) {
+
+    try {
+
+      console.log('===== EosManager::getTransaction - ', this.rpc);
+      const result = await this.rpc.history_get_transaction(id);
+      return {info: result};
+
+    } catch (e) {
+      console.log('\nCaught exception history_get_transaction: ' + e);
+      if (e instanceof this.RpcError)
+        console.log(JSON.stringify(e.json, null, 2));
+      return {error: e.json};
+    }
+
+  }
+
 
 };
 

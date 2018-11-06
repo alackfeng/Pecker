@@ -8,7 +8,7 @@ import JsonTable from '../components/JsonTable';
 import AccountAsset from './objects/AccountAsset';
 import AccountInfo from './objects/AccountInfo';
 
-const JSONFormat = false;
+const JSONFormat = true;
 
 export default class BlockAccount extends React.Component {
 
@@ -16,7 +16,7 @@ export default class BlockAccount extends React.Component {
     super(props);
 
     const filtersInfo = [/*'account_name', 'privileged', */'created', 'last_code_update', 'creator'];
-    const filtersAsset = ['core_liquid_balance', 'ram_quota', 'ram_usage', 'net_weight', 'cpu_weight'];
+    const filtersAsset = ['core_liquid_balance', 'net_weight', 'cpu_weight', 'staked', 'unstaking'];
     this.state = {
       filtersAsset: filtersAsset,
       filtersInfo: filtersInfo,
