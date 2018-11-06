@@ -5,12 +5,17 @@ import Colors from '../constants/Colors';
 import Layout from '../constants/Layout';
 import JsonTable from '../components/JsonTable';
 
+import AccountAsset from './objects/AccountAsset';
+import AccountInfo from './objects/AccountInfo';
+
+const JSONFormat = false;
+
 export default class BlockAccount extends React.Component {
 
   constructor(props) {
     super(props);
 
-    const filtersInfo = ['account_name', 'privileged', 'created', 'last_code_update'];
+    const filtersInfo = [/*'account_name', 'privileged', */'created', 'last_code_update', 'creator'];
     const filtersAsset = ['core_liquid_balance', 'ram_quota', 'ram_usage', 'net_weight', 'cpu_weight'];
     this.state = {
       filtersAsset: filtersAsset,
@@ -19,6 +24,19 @@ export default class BlockAccount extends React.Component {
   }
 
   render() {
+
+    const { accountInfo } = this.props;
+    const { filtersInfo, filtersAsset, filtersAsset1 } = this.state;
+
+
+    if(!JSONFormat)
+      return (
+        <View style={styles.container}>
+          <AccountInfo items={accountInfo} filters={filtersInfo} />
+          <AccountAsset title={'Asset'} items={accountInfo} filters={filtersAsset} />
+        </View>
+      );
+
     return (
       <View style={styles.container}>
         <JsonTable title={'Account'} items={this.props.accountInfo} filters={this.state.filtersInfo} />
