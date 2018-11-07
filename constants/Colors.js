@@ -13,5 +13,13 @@ export default {
   noticeText: '#fff',
   underline: 'red',
   leftBorder: 'gray',
+
+  screenBackGround: '#F5FCFF' || '#4B4948',
+  
+  debugColor: 'blue',
+  debugColorRed: 'red',
+  debugColorYellow: 'yellow',
+  debugColorGray: 'gray',
+  debugColorWhite: 'white',
 };
 
