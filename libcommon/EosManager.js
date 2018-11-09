@@ -84,6 +84,30 @@ class EosManager {
 
   }
 
+  async getTunnelInfos({type=1, lower=0, upper=100}) {
+
+    const infosContract = "peckersinfos";
+    const infosScope = "peckersinfos";
+    const infosTable = "infos";
+
+    try {
+
+      console.log('===== EosManager::getTunnelInfos - ', "this.rpc");
+      const result = await this.rpc.get_table_rows({
+        code: infosContract,
+        scope: infosScope,
+        table: infosTable,
+      });
+      return {info: result};
+
+    } catch (e) {
+      console.log('\nCaught exception getTunnelInfos : get_table_rows -  ' + e);
+      if (e instanceof this.RpcError)
+        console.log(JSON.stringify(e.json, null, 2));
+      return {error: e.json};
+    }
+  }
+
 
 };
 

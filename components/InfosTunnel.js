@@ -5,6 +5,7 @@ import Colors from '../constants/Colors';
 import Layout from '../constants/Layout';
 
 import InfosBoardOnChain from './objects/InfosBoardOnChain';
+import EosManager from '../libcommon/EosManager';
 
 
 const testInfosObjs = [
@@ -34,15 +35,46 @@ export default class InfosTunnel extends React.Component {
 
   constructor(props) {
     super(props);
+
+    this.state = {
+      infosObjects: null,
+    }
+  }
+
+  componentWillMount() {
+
+    EosManager.getTunnelInfos({}).then( result => {
+      console.log('===== InfosTunnel:: RESULT: ' , result);
+      this.setState({infosObjects: result.info});
+    }).catch( err => {
+      console.error('===== InfosTunnel:: ERROR: ' , err);
+    });
+  }
+
+  get_infos_board_obj = (infos) => {
+
+    if(infos && typeof infos === 'object' && infos.rows && Array.isArray(infos.rows)) {
+      console.log('===== InfosTunnel::get_infos_board_obj infosObjects = ' , infos.rows);
+
+      const infosBoardObjs = infos.rows
+        .sort( (a, b) => { return b.id-a.id; } )
+        .map( info => (<InfosBoardOnChain key={info.id} infosBoard={info} />) );
+
+      return infosBoardObjs;
+    }
+
+    return null;
   }
 
   render() {
 
-    const infosBoardObjs = testInfosObjs.map( info => (<InfosBoardOnChain key={info.info_title} infosBoard={info} />) )
+    const { infosObjects } = this.state;
+
+    const infosBoardObjs = this.get_infos_board_obj(infosObjects);
     
     return (
       <ScrollView style={styles.container} >
-        { infosBoardObjs }
+        { infosBoardObjs ? infosBoardObjs : <Text>Nothing Now!!!</Text> }
       </ScrollView>
     );
   }

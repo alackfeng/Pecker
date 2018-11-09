@@ -12,8 +12,8 @@ const infoSources = ['Offcial', 'Media', 'WeChat', 'Other'];
 
 const InfosBoardTimeBase = ({timebase, labels}=props) => (
   <View style={styles.timebaseContainer} >
-    <Text style={styles.timebaseText} >{new Date(timebase).toLocaleString()}</Text>
-    { labels.map(v=>(<Text key={v} style={styles.lableStyle} >{v}</Text>)) }
+    <Text style={styles.timebaseText} >{new Date(timebase*1000).toLocaleString()}</Text>
+    <Text key={labels} style={styles.lableStyle} >{labels}</Text>
   </View>
 );
 
@@ -35,20 +35,20 @@ const InfosBoardAbstract = ({abstract}=props) => {
   );
 }
 
-const InfosBoardSources = ({sources}=props) => {
+const InfosBoardSources = ({owner, source}=props) => {
   return (
     <View style={styles.sourcesContainer} >
-      <Text style={styles.sourcesText} >本文来源于：{  sources }</Text>
+      <Text style={styles.sourcesText} >本文来源于：{  source } - {owner}</Text>
     </View>
   );
 }
 
-const InfosBoardInfo = ({infosBoard}=props) => {
+const InfosBoardInfo = ({owner, infosBoard}=props) => {
   return (
     <View style={styles.infoContainer} >
-      {infosBoard.info_title && <InfosBoardTitle title={infosBoard.info_title} />}
-      {infosBoard.info_abstract && <InfosBoardAbstract abstract={infosBoard.info_abstract} />}
-      {infosBoard.info_sources && <InfosBoardSources sources={infosBoard.info_sources } />}
+      {infosBoard.title && <InfosBoardTitle title={infosBoard.title} />}
+      {infosBoard.abstract && <InfosBoardAbstract abstract={infosBoard.abstract} />}
+      {infosBoard.source && <InfosBoardSources owner={owner} source={infosBoard.source } />}
     </View>
   );
 }
@@ -81,9 +81,9 @@ export default class InfosBoardOnChain extends React.Component {
     
     return (
       <View style={styles.container} >
-        {infosBoard.info_declaration_time && 
-          <InfosBoardTimeBase timebase={infosBoard.info_declaration_time} labels={infosBoard.info_labels} />}
-        {infosBoard.info_title && <InfosBoardInfo infosBoard={infosBoard} />}
+        {infosBoard.declare && 
+          <InfosBoardTimeBase timebase={infosBoard.declare} labels={infosBoard.labels} />}
+        {infosBoard.info && <InfosBoardInfo owner={infosBoard.owner} infosBoard={infosBoard.info} />}
       </View>
     );
   }
