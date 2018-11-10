@@ -9,8 +9,9 @@ class EosManager {
   constructor({prviateKeys, rpcUrl }) {
     console.log("===== EosManager::constructor - ");
 
-    this.signatureProvider = new JsSignatureProvider(prviateKeys || defaultPrivateKey);
     this.rpc = new JsonRpc(rpcUrl || defaultRpcUrl, { fetch });
+
+    this.signatureProvider = new JsSignatureProvider(prviateKeys || defaultPrivateKey);
     this.api = new Api({  rpc: this.rpc,  signatureProvider: this.signatureProvider, /*textDecoder: new TextDecoder(), textEncoder: new TextEncoder()*/ });
   
     this.RpcError = RpcError;
