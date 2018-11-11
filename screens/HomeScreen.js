@@ -40,9 +40,9 @@ class HomeScreen extends React.Component {
     if(type === 'delete') WalletManager.delete({name, password});
     if(type === 'modify') WalletManager.modify({name, password});
 
-    if(type === 'islock') WalletManager.islock({name, password});
-    if(type === 'lock') WalletManager.lock({name, password});
-    if(type === 'unlock') WalletManager.unlock({name, password});
+    if(type === 'islock') WalletManager.isLocked({name, password});
+    if(type === 'lock') WalletManager.onLock({name, password});
+    if(type === 'unlock') WalletManager.unLock({name, password});
 
     this.setState({refresh: !this.state.refresh});
   }
