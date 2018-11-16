@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "postinstall": "rn-nodeify --install buffer,crypto,stream,util,process,vm --hack",
+    "postinstall": "rn-nodeify --install events,buffer,crypto,stream,util,process,vm --hack",
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "test": "jest"
   },
@@ -17,6 +17,7 @@
     "dns.js": "^1.0.1",
     "domain-browser": "^1.2.0",
     "eosjs": "https://github.com/alackfeng/eosjs.git",
+    "eosjs-rn": "^20.0.0-beta2.4",
     "events": "^1.1.1",
     "https-browserify": "0.0.1",
     "path-browserify": "0.0.0",

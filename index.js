@@ -1,6 +1,7 @@
 /** @format */
 // index.ios.js or index.android.js
 // make sure you use `import` and not require!  
+import 'babel-polyfill'
 import './shim.js'
 import crypto from 'crypto'
 // ...the rest of your code

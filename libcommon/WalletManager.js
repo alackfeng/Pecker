@@ -1,5 +1,5 @@
 
-import * as ecc from "eosjs-ecc";
+import * as ecc from "eosjs-ecc-rn";
 
 const walletType = ['EOS', 'ETH', 'BTC'];
 

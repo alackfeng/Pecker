@@ -1,5 +1,5 @@
 
-import { Api, JsonRpc, RpcError, JsSignatureProvider } from 'eosjs';
+import { Api, JsonRpc, RpcError, JsSignatureProvider } from 'eosjs-rn';
 
 const defaultPrivateKey = ["5JbuZx3MFvUY1FkYoWdR1o8b4TRCZwQJQzCvrT6JwVdQgLzscVo", '5J4j8MJdhiHGmJ26CGTHvqMWYeYNMTEL6itTaxXFPAUpPfPm61L']; // useraaaaaaaa
 const defaultRpcUrl = 'http://127.0.0.1:8000';
