@@ -4,6 +4,10 @@
 import 'babel-polyfill'
 import './shim.js'
 import crypto from 'crypto'
+
+import 'ethers/dist/shims.js';
+import { ethers } from 'ethers';
+
 // ...the rest of your code
 
 import React from 'react';

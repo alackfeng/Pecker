@@ -22,6 +22,7 @@ class HomeScreen extends React.Component {
       username: null,
       password: null,
       refresh: false,
+      tipscreate: null, //WalletManager.create(),
     }
     // WalletManager.create();
   }
@@ -36,13 +37,34 @@ class HomeScreen extends React.Component {
 
     const { username: name, password } = this.state;
 
-    if(type === 'create') WalletManager.create({name, password});
-    if(type === 'delete') WalletManager.delete({name, password});
-    if(type === 'modify') WalletManager.modify({name, password});
+    if(type === 'create') {
 
-    if(type === 'islock') WalletManager.isLocked({name, password});
-    if(type === 'lock') WalletManager.onLock({name, password});
-    if(type === 'unlock') WalletManager.unLock({name, password});
+      let { mnemonic } = WalletManager.generateMnemonic();
+      let mnemonicWallet = WalletManager.create({mnemonic});
+      // WalletManager.create({mnemonic, index: 1});
+
+      let encrypt2Json = null;
+      WalletManager.encrypt2Json({password: '123123'}).then(wallet => {
+        encrypt2Json = wallet;
+        console.log('===== HomeScreen::handleWallet - mnemonicWallet encrypt2Json ', encrypt2Json);
+
+        let unJson = WalletManager.loadEncryptedJson({json: wallet, password: '123123'}).then(unwallet => {
+          console.log('===== HomeScreen::handleWallet - mnemonicWallet unwallet ', unwallet);
+        })
+        
+      });
+      
+      
+      
+
+      this.setState({username: mnemonicWallet.address, password: mnemonicWallet.privateKey});
+    }
+    // if(type === 'delete') WalletManager.delete({name, password});
+    // if(type === 'modify') WalletManager.modify({name, password});
+
+    // if(type === 'islock') WalletManager.isLocked({name, password});
+    // if(type === 'lock') WalletManager.onLock({name, password});
+    // if(type === 'unlock') WalletManager.unLock({name, password});
 
     this.setState({refresh: !this.state.refresh});
   }
@@ -50,11 +72,12 @@ class HomeScreen extends React.Component {
   render() {
 
     const { increment, handleIncrement } = this.props;
+    const { tipscreate } = this.state;
 
-    const walletlist = WalletManager.getWallets();
-    const wallettips = walletlist.map(i => (<Text>Tips-Wallet: {i}</Text>));
+    // const walletlist = []; //WalletManager.getWallets();
+    const wallettips = null; //walletlist.map(i => (<Text>Tips-Wallet: {i}</Text>));
 
-    const tips = `\n${this.state.username} \n${this.state.password}`;
+    const tips = `\n${this.state.username} \n\t\n${this.state.password}`;
 
 
 
@@ -88,6 +111,7 @@ class HomeScreen extends React.Component {
         </View>
         <View style={styles.commitContainer}><Text>Tips: {tips}</Text></View>
         <View style={styles.commitContainer1}>{wallettips}</View>
+        <View style={styles.commitContainer}><Text>Tips: {JSON.stringify(tipscreate)}</Text></View>
         {/* <Button title="To WebView" onPress={ () => this.toWebViewPage() } />
         <Text>Home Screen { increment }</Text> */}
       </View>

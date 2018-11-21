@@ -10,6 +10,7 @@
   "dependencies": {
     "@tradle/react-native-http": "^2.0.1",
     "assert": "^1.4.1",
+    "bip39": "^2.5.0",
     "browserify-zlib": "^0.1.4",
     "buffer": "^4.9.1",
     "console-browserify": "^1.1.0",
@@ -18,6 +19,7 @@
     "domain-browser": "^1.2.0",
     "eosjs": "https://github.com/alackfeng/eosjs.git",
     "eosjs-rn": "^20.0.0-beta2.4",
+    "ethers": "^4.0.12",
     "events": "^1.1.1",
     "https-browserify": "0.0.1",
     "path-browserify": "0.0.0",

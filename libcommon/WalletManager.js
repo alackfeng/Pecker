@@ -1,145 +1,89 @@
 
 import * as ecc from "eosjs-ecc-rn";
+import { ethers } from 'ethers';
+import { defaultPath, HDNode, entropyToMnemonic, fromMnemonic } from 'ethers/utils/hdnode';
+var bip39 = require('bip39');
+var wordlists = require('bip39/wordlists/english');
 
 const walletType = ['EOS', 'ETH', 'BTC'];
 
-class Wallet {
-  constructor(type) {
-    this.type = type;
-  }
-
-  encrypt = ({ keys, encryption_key, password_pubkey }) => {
-    this.keys = keys;
-    this.encryption_key = encryption_key;
-    this.password_pubkey = password_pubkey;
-  }
-};
-
-class EosWallet extends Wallet {
-
-  constructor(name) {
-    super('EOS');
-
-    this.name = name;
-    this.keys = null;
-    this.encryption_key = null;
-    this.password_pubkey = null;
-    this.chain_id = null;
-  }
-};
-
-class EthWallet extends Wallet {
-
-  constructor(name) {
-    super('ETH');
-
-    this.name = name;
-  }
-};
 
 let walletsObjects = {};
-let walletsAuths = {};
-let defaultWallet = null;
+let mnemonicDefault = "radar blur cabbage chef fix engine embark joy scheme fiction master release";
+
 
 class WalletManager {
 
   constructor() {
 
-    this.state = {
-      wallets: {},
-      keys: {},
-    };
-
-    this.wallets = {};
   }
 
 
-  static create({type = 'EOS', name = 'default', password = ''} = {}) {
+  /*
+   * 随机生成助记词
+   * 
+   */
+  static generateMnemonic() {
 
-    console.log('===== WalletManager::create - ', walletsObjects);
-    // exist it, 
+    let mnemonic = bip39.generateMnemonic(); //generates string
 
-    // if(Object.keys(walletsObjects).includes(name))
-    //   return;
+    const seed = bip39.mnemonicToSeedHex(mnemonic); //creates seed buffer
+    const valid = bip39.validateMnemonic(mnemonic);
+    const entropy = bip39.mnemonicToEntropy(mnemonic);
+    // mnemonic = ethers.Wallet.createRandom().mnemonic;
 
-    // password
-    // Yue 5JhUVKGEC9JnjKaEeZWW1CJJeURz5Hy2LcFRNK1PVtSexUALcjV EOS6VTnLjC1bXAGxSB11p9dCFCRZKvcVWdhUDNMN9JoFvT99ZJ69F 5JbuZx3MFvUY1FkYoWdR1o8b4TRCZwQJQzCvrT6JwVdQgLzscVo
+    return {mnemonic, seed, entropy, valid};
+  }
 
-    const private_key = ecc.seedPrivate(password);
-    const public_key = ecc.privateToPublic(private_key);
-    const message = '5JbuZx3MFvUY1FkYoWdR1o8b4TRCZwQJQzCvrT6JwVdQgLzscVo';
+  /*
+   * 创建助记词钱包
+   * 
+   */
+  static create({type = 'ETH', mnemonic, path = "m/44'/60'/1'/0/", index = 0}) {
 
-    console.log('===== WalletManager::create - pri, pub, msg : ', private_key, public_key, message);
-
-    const aesObject = ecc.Aes.encrypt(private_key, public_key, message);
-    console.log('===== WalletManager::create - aesObject : ', aesObject.nonce, aesObject.checksum, aesObject.message);
-
-    const aesdObject = ecc.Aes.decrypt(private_key, public_key, aesObject.nonce, aesObject.message, aesObject.checksum);
-    console.log('===== WalletManager::create - aesdObject : ', aesdObject.toString());
-
-    let walletObj = null;
-    if(type === 'EOS') {
-       walletObj = new EosWallet(name);
-    } else if(type === 'ETH') {
-      walletObj = new EthWallet(name);
-    } else {
-      walletObj = new EosWallet(name);
-    }
-
-    walletObj.encrypt({
-      keys: aesObject, 
-      encryption_key: aesObject, 
-      password_pubkey: public_key
-    });
-    walletsObjects[name] = walletObj;
-    walletsAuths[name] = false;
-    defaultWallet = name;
+    console.log('===== WalletManager::create - ', walletsObjects, mnemonic);
     
+    if(mnemonic !== '') {
+      // eth path
+      let path = "m/44'/60'/1'/0/0";
+      // path = path + index;
+      let mnemonicWallet = ethers.Wallet.createRandom(); //fromMnemonic(mnemonicDefault || mnemonic, path);
+      
+      console.log('===== WalletManager::create - mnemonicWallet ', mnemonicWallet, path);
+      walletsObjects[type] = mnemonicWallet;
+      return mnemonicWallet;
+    }
+    
+    return {};
   }
 
-  static delete({name = 'default', password = ''}) {
+  /*
+   * 恢复助记词钱包
+   * 
+   */
+  static resume({type = 'ETH', mnemonic = ''}) {
 
-    // exist it, 
-    if(!Object.keys(walletsObjects).includes(name))
-      return;
-
-    // auth power
-    const private_key = ecc.seedPrivate(password);
-    const public_key = ecc.privateToPublic(private_key);
-
-    const walletObj = walletsObjects[name];
-    console.log('===== WalletManager::delete - walletObj : ', walletObj);
-    if(walletObj.password_pubkey != public_key )
-      return;
-
-    // delete
-    delete walletsObjects[name];
-    delete walletsAuths[name];
-
+    return WalletManager.create(type, mnemonic);
   }
 
-  static modify({name = 'default', password = '', newpassword}) {
+  /*
+   * 加密保存钱包
+   * 
+   */
+  static encrypt2Json({type = 'ETH', password}) {
 
+    let mnemonicWallet = walletsObjects[type];
+    if(mnemonicWallet && password) {
+      return mnemonicWallet.encrypt(password);
+    }
+    return null;
   }
 
-  static getWallets(type = '') {
-
-    return Object.keys(walletsObjects);
-  }
-
-  static onLock({name, password}) {
-    walletsAuths[defaultWallet] = true;
-  }
-
-  static isLocked({name}) {
-    return !!(walletsAuths[defaultWallet]);
-  }
-
-  static unLock({name, password}) {
-    // auth power
-
-    // unlock 
-    walletsAuths[defaultWallet] = false;
+  static loadEncryptedJson({type = 'ETH', json, password}) {
+    if(json && password) {
+      return ethers.Wallet.fromEncryptedJson(json, password);
+    }
+    return null;
   }
 
 };
