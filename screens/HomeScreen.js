@@ -39,17 +39,17 @@ class HomeScreen extends React.Component {
 
     if(type === 'create') {
 
-      let { mnemonic } = WalletManager.generateMnemonic();
-      let mnemonicWallet = WalletManager.create({mnemonic});
+      let { mnemonic, seed, entropy } = WalletManager.generateMnemonic();
+      let mnemonicWallet = WalletManager.create({mnemonic, seed, entropy});
       // WalletManager.create({mnemonic, index: 1});
 
       let encrypt2Json = null;
       WalletManager.encrypt2Json({password: '123123'}).then(wallet => {
         encrypt2Json = wallet;
-        console.log('===== HomeScreen::handleWallet - mnemonicWallet encrypt2Json ', encrypt2Json);
+        // console.log('===== HomeScreen::handleWallet - mnemonicWallet encrypt2Json ', encrypt2Json);
 
         let unJson = WalletManager.loadEncryptedJson({json: wallet, password: '123123'}).then(unwallet => {
-          console.log('===== HomeScreen::handleWallet - mnemonicWallet unwallet ', unwallet);
+          // console.log('===== HomeScreen::handleWallet - mnemonicWallet unwallet ', unwallet);
         })
         
       });
