@@ -27,6 +27,8 @@ export default class EosWallet {
       }
     }
     this._chainId = chainId || 'aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906'
+    this.type = 'EOS';
+    this.path = "m/44'/194'/0'/0/0";
   }
 
   static generateMnemonic () {
@@ -53,16 +55,16 @@ export default class EosWallet {
 
   derivePath (path) {
     assert(this._node.derive, 'can not derive when generate from private / public key')
-    this._node = this._node.derive(path)
+    this._node = this._node.derive(path || this.path)
     const extendedKey = this._node.privateExtendedKey || this._node.publicExtendedKey
-    return new HDNode({ extendedKey, chainId: this._chainId })
+    return new EosWallet({ extendedKey, chainId: this._chainId })
   }
 
   deriveChild (index) {
     assert(this._node.deriveChild, 'can not derive when generate from private / public key')
     this._node = this._node.deriveChild(index)
     const extendedKey = this._node.privateExtendedKey || this._node.publicExtendedKey
-    return new HDNode({ extendedKey, chainId: this._chainId })
+    return new EosWallet({ extendedKey, chainId: this._chainId })
   }
 
   getPrivateExtendedKey () {

@@ -1,14 +1,15 @@
 import React from 'react';
-import { View, Text, Button, StyleSheet, TextInput } from 'react-native';
+import { View, ScrollView, Text, Button, StyleSheet, TextInput } from 'react-native';
 import PropTypes from 'prop-types';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { handleIncrement } from '../actions/counterActions';
 
-import WalletManager from '../libcommon/WalletManager';
+import HdWallet from '../libcommon/HdWallet';
 
 
+let mnemonicWallet = null;
 class HomeScreen extends React.Component {
 
   static navigationOptions = {
@@ -22,9 +23,9 @@ class HomeScreen extends React.Component {
       username: null,
       password: null,
       refresh: false,
-      tipscreate: null, //WalletManager.create(),
+      tipscreate: null,
     }
-    // WalletManager.create();
+
   }
 
   toWebViewPage = (url) => {
@@ -39,32 +40,37 @@ class HomeScreen extends React.Component {
 
     if(type === 'create') {
 
-      let { mnemonic, seed, entropy } = WalletManager.generateMnemonic();
-      let mnemonicWallet = WalletManager.create({mnemonic, seed, entropy});
-      // WalletManager.create({mnemonic, index: 1});
-
-      let encrypt2Json = null;
-      WalletManager.encrypt2Json({password: '123123'}).then(wallet => {
-        encrypt2Json = wallet;
-        // console.log('===== HomeScreen::handleWallet - mnemonicWallet encrypt2Json ', encrypt2Json);
-
-        let unJson = WalletManager.loadEncryptedJson({json: wallet, password: '123123'}).then(unwallet => {
-          // console.log('===== HomeScreen::handleWallet - mnemonicWallet unwallet ', unwallet);
-        })
-        
-      });
-      
-      
+      let { mnemonic } = HdWallet.generateMnemonic();
+      mnemonicWallet = HdWallet.create({mnemonic});
       
 
       this.setState({username: mnemonicWallet.address, password: mnemonicWallet.privateKey});
     }
-    // if(type === 'delete') WalletManager.delete({name, password});
-    // if(type === 'modify') WalletManager.modify({name, password});
 
-    // if(type === 'islock') WalletManager.isLocked({name, password});
-    // if(type === 'lock') WalletManager.onLock({name, password});
-    // if(type === 'unlock') WalletManager.unLock({name, password});
+    if(type === 'delete') {
+      
+      mnemonicWallet.encrypt2Json({password: '123123'}).then(wallet => {
+        console.log('===== HomeScreen::handleWallet - mnemonicWallet encrypt2Json ', wallet);
+
+        this.setState({tipscreate: wallet});
+
+        let unJson = mnemonicWallet.loadEncryptedJson({json: wallet, password: '123123'}).then(unwallet => {
+          console.log('===== HomeScreen::handleWallet - mnemonicWallet unwallet ', unwallet);
+        })
+        
+      });
+    }
+    if(type === 'modify') {
+      // let btcAddresses = mnemonicWallet.randomAddresses(20);
+      // console.log('===== HomeScreen::handleWallet - mnemonicWallet btcAddresses ', btcAddresses, mnemonicWallet.wallets['BTC']);
+
+      let eosAddresses = mnemonicWallet.randomEosAddresses(5);
+      console.log('===== HomeScreen::handleWallet - mnemonicWallet eosAddresses ', eosAddresses, mnemonicWallet.wallets['EOS']);
+    }
+
+    // if(type === 'islock') HdWallet.isLocked({name, password});
+    // if(type === 'lock') HdWallet.onLock({name, password});
+    // if(type === 'unlock') HdWallet.unLock({name, password});
 
     this.setState({refresh: !this.state.refresh});
   }
@@ -74,8 +80,7 @@ class HomeScreen extends React.Component {
     const { increment, handleIncrement } = this.props;
     const { tipscreate } = this.state;
 
-    // const walletlist = []; //WalletManager.getWallets();
-    const wallettips = null; //walletlist.map(i => (<Text>Tips-Wallet: {i}</Text>));
+    const wallettips = mnemonicWallet ? mnemonicWallet.wallets['EOS'] : null;
 
     const tips = `\n${this.state.username} \n\t\n${this.state.password}`;
 
@@ -109,11 +114,10 @@ class HomeScreen extends React.Component {
           <Button title="lock" onPress={ () => this.handleWallet('lock') } />
           <Button title="unlock" onPress={ () => this.handleWallet('unlock') } />
         </View>
-        <View style={styles.commitContainer}><Text>Tips: {tips}</Text></View>
-        <View style={styles.commitContainer1}>{wallettips}</View>
-        <View style={styles.commitContainer}><Text>Tips: {JSON.stringify(tipscreate)}</Text></View>
-        {/* <Button title="To WebView" onPress={ () => this.toWebViewPage() } />
-        <Text>Home Screen { increment }</Text> */}
+        <ScrollView>
+          <View style={styles.commitContainer}><Text>Tips: {JSON.stringify(tipscreate) }</Text></View>
+          <View style={styles.commitContainer}><Text>Tips: {JSON.stringify(wallettips)}</Text></View>
+        </ScrollView>
       </View>
     );
   }
