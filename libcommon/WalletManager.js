@@ -1,4 +1,6 @@
 
+import EosWallet from './EosWallet';
+
 import * as ecc from "eosjs-ecc-rn";
 import { ethers } from 'ethers';
 import { defaultPath, HDNode, entropyToMnemonic, fromMnemonic } from 'ethers/utils/hdnode';
@@ -7,9 +9,6 @@ var bip32 = require('bip32');
 const bitcoin = require('bitcoinjs-lib')
 const assert = require('assert')
 
-let node = bip32.fromBase58('xprv9s21ZrQH143K3QTDL4LXw2F7HEK3wJUD2nW2nRk4stbPy6cq3jPPqjiChkVvvNKmPGJxWUtg6LnF5kejMRNNU3TGtRBeJgk33yuGBxrMPHi')
-let child = node.derivePath('m/0/0')
-
 
 const walletType = ['EOS', 'ETH', 'BTC'];
 
@@ -17,12 +16,7 @@ const walletType = ['EOS', 'ETH', 'BTC'];
 let walletsObjects = {};
 let mnemonicDefault = "radar blur cabbage chef fix engine embark joy scheme fiction master release";
 
-class EosWallet {
 
-  constructor() {
-
-  }
-}
 
 class BtcWallet {
 
@@ -127,14 +121,14 @@ class WalletManager {
 
     // federal tell shift mesh rough affair solve wrong video fold jelly season
     let mnemonic = bip39.generateMnemonic(); //generates string
-    mnemonic = ethers.Wallet.createRandom().mnemonic;
-    mnemonic = "federal tell shift mesh rough affair solve wrong video fold jelly season";
-    assert(bip39.validateMnemonic(mnemonic));
+    // let mnemonic = ethers.Wallet.createRandom().mnemonic;
+    mnemonic = "mansion garden pupil calm language brown youth pottery piano neutral job labor";
+    // assert(bip39.validateMnemonic(mnemonic));
 
-    const seed = bip39.mnemonicToSeedHex(mnemonic); //creates seed buffer
-    const entropy = bip39.mnemonicToEntropy(mnemonic);
+    // const seed = bip39.mnemonicToSeedHex(mnemonic); //creates seed buffer
+    // const entropy = bip39.mnemonicToEntropy(mnemonic);
 
-    return {mnemonic, seed, entropy};
+    return {mnemonic/*, seed, entropy*/};
   }
 
   /*
@@ -147,9 +141,9 @@ class WalletManager {
     
     if(mnemonic !== '') {
       // eth path
-      let path = "m/44'/60'/1'/0/0";
+      let path = "m/44'/60'/0'/0/0";
       // path = path + index;
-      let mnemonicWallet = ethers.Wallet.createRandom(); //fromMnemonic(mnemonicDefault || mnemonic, path);
+      let mnemonicWallet = ethers.Wallet.fromMnemonic(mnemonic, path);
       
       console.log('===== WalletManager::create - mnemonicWallet ', mnemonicWallet, path);
       walletsObjects[type] = mnemonicWallet;
@@ -160,6 +154,9 @@ class WalletManager {
 
       console.log('===== WalletManager::create - mnemonicWallet getKeyPair() ', walletsObjects['BTC'].getKeyPair());
 
+      let eosWallet = EosWallet.fromMnemonic({mnemonic});
+      walletsObjects['EOS'] = eosWallet;
+      console.log('===== WalletManager::create - mnemonicWallet EosWallet() ', eosWallet, eosWallet.getPrivateKey(), eosWallet.getPublicKey());
 
       return mnemonicWallet;
     }
