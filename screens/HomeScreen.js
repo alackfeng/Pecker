@@ -61,14 +61,25 @@ class HomeScreen extends React.Component {
       });
     }
     if(type === 'modify') {
-      // let btcAddresses = mnemonicWallet.randomAddresses(20);
+      // let btcAddresses = mnemonicWallet.randomBtcAddresses(20);
       // console.log('===== HomeScreen::handleWallet - mnemonicWallet btcAddresses ', btcAddresses, mnemonicWallet.wallets['BTC']);
 
-      let eosAddresses = mnemonicWallet.randomEosAddresses(5);
-      console.log('===== HomeScreen::handleWallet - mnemonicWallet eosAddresses ', eosAddresses, mnemonicWallet.wallets['EOS']);
+      let eosWallets = mnemonicWallet.randomEosAddresses(5);
+      
+      for(var index in eosWallets) {
+        // console.log('===== HomeScreen::handleWallet - mnemonicWallet eosWallets ', eosWallets[index], mnemonicWallet.eosWallets['EOS']);
+        const { wallet } = eosWallets[index];
+        mnemonicWallet.setWallet({type: 'EOS', wallet: wallet});
+      };
+      
+      console.log('===== HomeScreen::handleWallet - mnemonicWallet eosAddresses ', eosWallets, mnemonicWallet.eosWallets);
     }
 
-    // if(type === 'islock') HdWallet.isLocked({name, password});
+    if(type === 'islock') {
+      // EOS8eWEFoDmTCg7NoerFs5hW8TjhbXnsNZCZhWsJ3QYPHUVnwFM5E
+      const priv = mnemonicWallet.eosWallets['EOS8eWEFoDmTCg7NoerFs5hW8TjhbXnsNZCZhWsJ3QYPHUVnwFM5E'].getPrivateKey();
+      HdWallet.importEosPriv(priv);
+    } 
     // if(type === 'lock') HdWallet.onLock({name, password});
     // if(type === 'unlock') HdWallet.unLock({name, password});
 
@@ -80,7 +91,7 @@ class HomeScreen extends React.Component {
     const { increment, handleIncrement } = this.props;
     const { tipscreate } = this.state;
 
-    const wallettips = mnemonicWallet ? mnemonicWallet.wallets['EOS'] : null;
+    const wallettips = mnemonicWallet ? mnemonicWallet.eosWallets['EOS'] : null;
 
     const tips = `\n${this.state.username} \n\t\n${this.state.password}`;
 

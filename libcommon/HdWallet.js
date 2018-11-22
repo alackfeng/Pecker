@@ -2,6 +2,7 @@
 import EosWallet from './EosWallet';
 import BtcWallet from './BtcWallet';
 import { ethers } from 'ethers';
+import ecc from 'eosjs-ecc';
 
 var bip39 = require('bip39');
 const assert = require('assert')
@@ -20,17 +21,19 @@ export default class HdWallet {
     this.type = 'ETH';
     this.path = "m/44'/60'/0'/0/0";
 
-    this.wallets = {};
-    this.wallets['ETH'] = ethWallet;
-    this.wallets['EOS'] = eosWallet;
-    this.wallets['BTC'] = btcWallet;
+    // this.wallets = {};
+    this.ethWallet = ethWallet;
+    
+    this.eosWallets = { 'EOS' : eosWallet};
+
+    this.btcWallets = { 'BTC' : btcWallet };
 
   }
 
-  randomAddresses(pos) {
+  randomBtcAddresses(pos) {
     let btcAddresses = [];
 
-    const btcWallet = this.wallets['BTC'];
+    const btcWallet = this.btcWallets['BTC'];
     // console.log('===== HdWallet::randomAddresses - btcWallet > ', btcWallet);
     if(btcWallet) {
       for(var index = 1; index <= pos; index++) {
@@ -43,19 +46,20 @@ export default class HdWallet {
   }
 
   randomEosAddresses(pos = 1) {
-    let eosAddresses = [];
+    let keyPairs = [];
 
-    const eosWallet = this.wallets['EOS'];
-    eosAddresses.push(eosWallet);
+    const eosWallet = this.eosWallets['EOS'];
     // console.log('===== HdWallet::randomAddresses - eosWallet > ', eosWallet);
     if(eosWallet) {
       for(var index = 1; index <= pos; index++) {
         // console.log('===== HdWallet::randomAddresses - eosWallet - index > ', index);
-        const wallet = eosWallet.deriveChild();
-        eosAddresses.push(wallet);
+        const wallet = eosWallet.deriveChild(index);
+        assert(ecc.isValidPrivate(wallet.getPrivateKey()), 'EOS priv not valid!');
+        assert(ecc.isValidPublic(wallet.getPublicKey()), 'EOS priv not valid!');
+        keyPairs.push({pubkey: wallet.getPublicKey() , wallet});
       }
     }
-    return eosAddresses;
+    return keyPairs;
   }
 
 
@@ -125,7 +129,7 @@ export default class HdWallet {
    */
   encrypt2Json({type = 'ETH', password}) {
 
-    let mnemonicWallet = this.wallets[type];
+    let mnemonicWallet = this.ethWallet;
     if(mnemonicWallet && password) {
       return mnemonicWallet.encrypt(password);
     }
@@ -147,7 +151,18 @@ export default class HdWallet {
   }
 
   setWallet({type = 'ETH', wallet}) {
-    this.wallets[type] = wallet;
+
+    if(type === 'ETH')  
+      this.ethWallet = ethWallet;
+    if(type === 'EOS')  
+      this.eosWallets[wallet.getPublicKey()] = wallet;
+    if(type === 'BTC')  
+      this.btcWallets[wallet.getAddress()] = wallet;
+  }
+
+  static importEosPriv(priv) {
+    console.log('===== HdWallet::importEosPriv - priv > ', priv);
+    const eosWallet = EosWallet.fromPrivateKey(priv);
   }
 
 };
