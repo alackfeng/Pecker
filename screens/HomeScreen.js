@@ -49,14 +49,21 @@ class HomeScreen extends React.Component {
 
     if(type === 'delete') {
       
-      mnemonicWallet.encrypt2Json({password: '123123'}).then(wallet => {
-        console.log('===== HomeScreen::handleWallet - mnemonicWallet encrypt2Json ', wallet);
+      let password = '123123';
+      mnemonicWallet.encrypt2Json({password}).then(wallets => {
 
-        this.setState({tipscreate: wallet});
+        for(var i in wallets) {
+          let wallet = wallets[i];
+          console.log('===== HomeScreen::handleWallet - mnemonicWallet encrypt2Json ', JSON.parse(wallet).address);
+          this.setState({tipscreate: wallet});
 
-        let unJson = mnemonicWallet.loadEncryptedJson({json: wallet, password: '123123'}).then(unwallet => {
-          console.log('===== HomeScreen::handleWallet - mnemonicWallet unwallet ', unwallet);
-        })
+          let unJson = mnemonicWallet.loadEncryptedJson({json: wallet, password}).then(unwallet => {
+            console.log('===== HomeScreen::handleWallet - mnemonicWallet unwallet ', unwallet);
+          })
+        }
+        
+
+        
         
       });
     }
